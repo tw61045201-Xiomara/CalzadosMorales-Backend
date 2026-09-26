@@ -18,7 +18,7 @@ public class ProductoService {
     @Autowired private TallaRepository tallaRepo;
     @Autowired private ColorRepository colorRepo;
     @Autowired private MaterialRepository materialRepo;
-    @Autowired private ProductoTallaRepository productoTallaRepo; // 🌟 NUEVO: Inyectado para persistir curvas de stock de forma directa
+    @Autowired private ProductoTallaRepository productoTallaRepo; 
 
     public List<Producto> listarProductos() {
         return productoRepo.findAll();
