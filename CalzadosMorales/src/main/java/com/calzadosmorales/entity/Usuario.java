@@ -1,5 +1,6 @@
 package com.calzadosmorales.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,7 @@ public class Usuario {
 	@Column(nullable = false, unique = true)
 	private String usuario;
 
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	@Column(nullable = false)
 	private String clave;
 
