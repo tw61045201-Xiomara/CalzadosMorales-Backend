@@ -37,18 +37,18 @@ public class SecurityConfig {
         http
             .authenticationProvider(authenticationProvider())
             .authorizeHttpRequests(auth -> auth
-                // ✅ LÍNEA NUEVA: rutas de la app móvil — sin login
+            
                 .requestMatchers("/api/**").permitAll()
-                // Rutas del sistema web — sin cambios
+
                 .requestMatchers("/assets/**", "/login", "/css/**", "/js/**", "/vendors/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/index", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/productos", true)  
+                    .failureUrl("/login?error=true")
+                    .permitAll()
+                )
             .logout(logout -> logout
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
