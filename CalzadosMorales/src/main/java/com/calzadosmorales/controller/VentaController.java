@@ -4,13 +4,17 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional; // 🌟 IMPORTANTE: Añadida la importación para transacciones
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -34,10 +38,6 @@ import com.calzadosmorales.service.VentaService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/ventas")
@@ -67,12 +67,12 @@ public class VentaController {
     @Autowired
     private ExcelService excelService; 
 
-
     @GetMapping("/nueva")
     public String nuevaVenta(Model model, HttpSession session) {
         model.addAttribute("productos", productoService.listarProductos());
         model.addAttribute("clientes", clienteService.listarTodos()); 
         
+        @SuppressWarnings("unchecked")
         List<DetalleVenta> carrito = (List<DetalleVenta>) session.getAttribute("carrito");
         if (carrito == null) {
             carrito = new ArrayList<>();
@@ -87,7 +87,6 @@ public class VentaController {
         model.addAttribute("total", total);
         return "nueva_venta"; 
     }
-
 
     @PostMapping("/agregar")
     public String agregarProducto(
@@ -115,6 +114,7 @@ public class VentaController {
             return "redirect:/ventas/nueva";
         }
 
+        @SuppressWarnings("unchecked")
         List<DetalleVenta> carrito = (List<DetalleVenta>) session.getAttribute("carrito");
         if (carrito == null) carrito = new ArrayList<>();
 
@@ -149,9 +149,9 @@ public class VentaController {
         return "redirect:/ventas/nueva";
     }
 
-
     @GetMapping("/quitar/{index}")
     public String quitarDelCarrito(@PathVariable("index") int index, HttpSession session) {
+        @SuppressWarnings("unchecked")
         List<DetalleVenta> carrito = (List<DetalleVenta>) session.getAttribute("carrito");
         if (carrito != null && index < carrito.size()) carrito.remove(index);
         return "redirect:/ventas/nueva";
@@ -163,7 +163,6 @@ public class VentaController {
         return "redirect:/ventas/nueva";
     }
 
-
     @PostMapping("/guardar")
     public String guardarVenta(
             @RequestParam("id_cliente") Integer idCliente, 
@@ -174,6 +173,7 @@ public class VentaController {
             RedirectAttributes flash,
             Authentication auth) { 
 
+        @SuppressWarnings("unchecked")
         List<DetalleVenta> carrito = (List<DetalleVenta>) session.getAttribute("carrito");
         if (carrito == null || carrito.isEmpty()) {
             flash.addFlashAttribute("error", "El carrito está vacío.");
@@ -235,7 +235,7 @@ public class VentaController {
 
     @GetMapping("/verPDF/{id}")
     @ResponseBody
-    @Transactional(readOnly = true) // 🔥 SOLUCIÓN: Mantiene activa la sesión de persistencia para mapear las listas Lazy en la nube
+    @Transactional(readOnly = true)
     public void verPDF(@PathVariable("id") Integer idVenta, HttpServletResponse response) {
         try {
             Venta venta = ventaService.buscarPorId(idVenta); 
@@ -249,7 +249,6 @@ public class VentaController {
             System.err.println("Error al visualizar el PDF: " + e.getMessage());
         }
     }
-
 
     @GetMapping("/listar")
     @ResponseBody 
@@ -311,7 +310,7 @@ public class VentaController {
     }
 
     @GetMapping("/historial-general")
-    @PreAuthorize("hasRole('ROLE_1')") 
+    @PreAuthorize("hasAnyAuthority('1', 'ROLE_1')") 
     public String historialGeneral(Model model) {
         model.addAttribute("listaHistorial", ventaService.obtenerHistorialGeneralAdmin());
         return "historial_general"; 
@@ -344,10 +343,11 @@ public class VentaController {
         return "analisis_horario"; 
     }
     
+    
     @GetMapping("/exportar-excel")
-    @PreAuthorize("hasRole('ROLE_1')")
+    @PreAuthorize("hasAnyAuthority('1', 'ROLE_1')")
     public void exportarExcel(HttpServletResponse response) throws IOException {
-        response.setContentType("application/octet-stream");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=Reporte_Ventas_CalzadosMorales.xlsx";
         response.setHeader(headerKey, headerValue);
