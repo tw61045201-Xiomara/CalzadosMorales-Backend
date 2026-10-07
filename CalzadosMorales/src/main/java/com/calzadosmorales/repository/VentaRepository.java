@@ -10,8 +10,6 @@ import com.calzadosmorales.entity.Venta;
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Integer> {
 
-  
-
     @Query(value = "CALL sp_VentasMesVendedor(:id)", nativeQuery = true)
     Double getVentasMes(@Param("id") int idVendedor);
 
@@ -36,8 +34,6 @@ public interface VentaRepository extends JpaRepository<Venta, Integer> {
     @Query(value = "CALL sp_MisUltimosSieteClientes(:id)", nativeQuery = true)
     List<Object[]> getUltimosSieteClientes(@Param("id") int idVendedor);
 
-  
-
     @Query(value = "CALL sp_AdminCajaHoy()", nativeQuery = true)
     Double getAdminCajaHoy();
 
@@ -61,8 +57,6 @@ public interface VentaRepository extends JpaRepository<Venta, Integer> {
 
     @Query(value = "CALL sp_AdminTopCincoVendedores()", nativeQuery = true)
     List<Object[]> getAdminTopCincoVendedores();
-    
-
 
     @Query(value = "CALL sp_ListarMisVentas(:id)", nativeQuery = true)
     List<Object[]> listarMisVentas(@Param("id") int idUsuario);
@@ -73,6 +67,7 @@ public interface VentaRepository extends JpaRepository<Venta, Integer> {
     @Query(value = "CALL sp_VendedorClientesPorRecuperar(:id)", nativeQuery = true)
     List<Object[]> clientesPorRecuperar(@Param("id") int idUsuario);
 
+    // Procedimiento para el reporte general y exportación Excel
     @Query(value = "CALL sp_AdminHistorialGeneralVentas()", nativeQuery = true)
     List<Object[]> adminHistorialGeneral();
 
@@ -85,11 +80,7 @@ public interface VentaRepository extends JpaRepository<Venta, Integer> {
     @Query(value = "CALL sp_AdminAnalisisHorarioVentas()", nativeQuery = true)
     List<Object[]> adminAnalisisHorario();
 
-
-
-   
     boolean existsByCodigoSincronizacion(String codigoSincronizacion);
-
 
     @Query(value = "SELECT MAX(CAST(numero AS UNSIGNED)) FROM venta WHERE serie = :serie", nativeQuery = true)
     Integer findMaxCorrelativoBySerie(@Param("serie") String serie);

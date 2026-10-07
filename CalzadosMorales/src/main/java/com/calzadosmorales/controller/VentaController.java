@@ -343,7 +343,7 @@ public class VentaController {
         return "analisis_horario"; 
     }
     
-    
+
     @GetMapping("/exportar-excel")
     @PreAuthorize("hasAnyAuthority('1', 'ROLE_1')")
     public void exportarExcel(HttpServletResponse response) throws IOException {
@@ -351,7 +351,47 @@ public class VentaController {
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=Reporte_Ventas_CalzadosMorales.xlsx";
         response.setHeader(headerKey, headerValue);
-        List<Object[]> listaHistorial = ventaService.obtenerHistorialGeneralAdmin();
+
+        List<Object[]> listaHistorial;
+        try {
+         
+            listaHistorial = ventaService.obtenerHistorialGeneralAdmin();
+            if (listaHistorial == null) listaHistorial = new ArrayList<>();
+        } catch (Exception ex) {
+           
+            System.err.println("Aviso: Falló el SP de historial, usando extracción JPA de respaldo: " + ex.getMessage());
+            List<Venta> ventas = ventaRepo.findAll();
+            listaHistorial = new ArrayList<>();
+            for (Venta v : ventas) {
+                String clienteNombre = "Cliente General";
+                if (v.getCliente() != null) {
+                    Cliente c = v.getCliente();
+                    if (c instanceof PersonaNatural) {
+                        PersonaNatural pn = (PersonaNatural) c;
+                        clienteNombre = pn.getNombre() + " " + pn.getApellido();
+                    } else if (c instanceof PersonaJuridica) {
+                        PersonaJuridica pj = (PersonaJuridica) c;
+                        clienteNombre = pj.getRazonSocial();
+                    }
+                }
+                String vendedorNombre = (v.getUsuario() != null) ? v.getUsuario().getUsuario() : "Sistema";
+                String comprobante = (v.getSerie() != null && v.getNumero() != null) 
+                        ? v.getSerie() + "-" + v.getNumero() 
+                        : "BOL-" + v.getId_venta();
+                String fecha = (v.getFecha() != null) ? v.getFecha().toString().replace("T", " ") : "";
+
+                listaHistorial.add(new Object[]{
+                    v.getId_venta(),
+                    fecha,
+                    vendedorNombre,
+                    clienteNombre,
+                    comprobante,
+                    v.getTotal() != null ? v.getTotal() : BigDecimal.ZERO,
+                    v.getEstado() != null ? v.getEstado() : "COMPLETADO"
+                });
+            }
+        }
+
         excelService.exportarVentasExcel(response, listaHistorial);
     }
 }
