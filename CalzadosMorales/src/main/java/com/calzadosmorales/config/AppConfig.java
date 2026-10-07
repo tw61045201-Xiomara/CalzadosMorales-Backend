@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AppConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // ACEPTA TEXTO PLANO (SÓLO PARA PRUEBAS)
+       
         return NoOpPasswordEncoder.getInstance();
     }
 }
