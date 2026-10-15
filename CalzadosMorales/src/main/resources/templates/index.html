@@ -40,7 +40,7 @@
                                     <div class="card-body p-metric">
                                         <img th:src="@{/assets/images/dashboard/circle.svg}" class="card-img-absolute" />
                                         <h4 class="font-weight-normal mb-3 small">INGRESOS DE HOY <i class="mdi mdi-cash-usd float-right"></i></h4>
-                                        <h2 th:text="'S/ ' + ${#numbers.formatDecimal(ingresosDia, 1, 2)}">S/ 0.00</h2>
+                                        <h2 th:text="${ingresosDia != null} ? 'S/ ' + ${#numbers.formatDecimal(ingresosDia, 1, 2)} : 'S/ 0.00'">S/ 0.00</h2>
                                     </div>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                                     <div class="card-body p-metric">
                                         <img th:src="@{/assets/images/dashboard/circle.svg}" class="card-img-absolute" />
                                         <h4 class="font-weight-normal mb-3 small">VENTAS PROMEDIO <i class="mdi mdi-chart-line float-right"></i></h4>
-                                        <h2 th:text="'S/ ' + ${#numbers.formatDecimal(ticketPromedio, 1, 2)}">S/ 0.00</h2>
+                                        <h2 th:text="${ticketPromedio != null} ? 'S/ ' + ${#numbers.formatDecimal(ticketPromedio, 1, 2)} : 'S/ 0.00'">S/ 0.00</h2>
                                     </div>
                                 </div>
                             </div>
@@ -117,8 +117,8 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr th:each="v : ${topVendedores}">
-                                                        <td th:text="${v[0]}"></td> <td th:text="${v[1]}"></td> <td th:text="'S/ ' + ${#numbers.formatDecimal(v[2], 1, 2)}"></td> <td><div class="badge badge-gradient-info" th:text="${v[3]} + ' mod.'"></div></td> </tr>
+                                                    <tr th:if="${topVendedores != null}" th:each="v : ${topVendedores}">
+                                                        <td th:text="${v[0]}"></td> <td th:text="${v[1]}"></td> <td th:text="${v[2] != null} ? 'S/ ' + ${#numbers.formatDecimal(v[2], 1, 2)} : 'S/ 0.00'"></td> <td><div class="badge badge-gradient-info" th:text="${v[3]} + ' mod.'"></div></td> </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -135,7 +135,7 @@
                                     <div class="card-body p-metric">
                                         <img th:src="@{/assets/images/dashboard/circle.svg}" class="card-img-absolute" />
                                         <h4 class="font-weight-normal mb-3 small">VENTA DEL MES <i class="mdi mdi-cash float-right"></i></h4>
-                                        <h3 th:text="'S/ ' + ${#numbers.formatDecimal(ventasMes, 1, 2)}">S/ 0.00</h3>
+                                        <h3 th:text="${ventasMes != null} ? 'S/ ' + ${#numbers.formatDecimal(ventasMes, 1, 2)} : 'S/ 0.00'">S/ 0.00</h3>
                                     </div>
                                 </div>
                             </div>
@@ -144,7 +144,7 @@
                                     <div class="card-body p-metric">
                                         <img th:src="@{/assets/images/dashboard/circle.svg}" class="card-img-absolute" />
                                         <h4 class="font-weight-normal mb-3 small">COMISION ESTIMIDA (5%) <i class="mdi mdi-wallet-giftcard float-right"></i></h4>
-                                        <h3 th:text="'S/ ' + ${#numbers.formatDecimal(comision, 1, 2)}">S/ 0.00</h3>
+                                        <h3 th:text="${comision != null} ? 'S/ ' + ${#numbers.formatDecimal(comision, 1, 2)} : 'S/ 0.00'">S/ 0.00</h3>
                                     </div>
                                 </div>
                             </div>
@@ -212,7 +212,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr th:each="uv : ${ultimasVentasVendedor}">
+                                                    <tr th:if="${ultimasVentasVendedor != null}" th:each="uv : ${ultimasVentasVendedor}">
                                                         <td th:text="${uv[1]}"></td> <td th:text="${uv[2]}"></td> <td th:text="${uv[3]}"></td> <td>
                                                             <label class="badge badge-gradient-success" th:text="${uv[4]}"></label> </td>
                                                     </tr>
