@@ -358,8 +358,7 @@
             $('#tablaNatural').DataTable({ "language": { "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" } });
             $('#tablaJuridica').DataTable({ "language": { "url": "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" } });
 
-            // LOGICA PARA REABRIR MODAL SI HAY ERROR DE VALIDACIÓN
-            /*<![CDATA[*/
+			           
             var abrirNatural = /*[[${modalOpenNatural}]]*/ false;
             var abrirJuridica = /*[[${modalOpenJuridica}]]*/ false;
             
@@ -373,17 +372,17 @@
                 var tab = new bootstrap.Tab(triggerEl);
                 tab.show();
             }
-            /*]]>*/
+			
         });
 
-        // ================= FUNCIÓN NUEVO (LIMPIA EL FORM) =================
+		
         function abrirModalNaturalNuevo() {
             var modalEl = document.getElementById('modalNatural');
             var form = modalEl.querySelector('form');
             form.reset(); // Limpia cajas
             modalEl.querySelector('input[name="id_cliente"]').value = ''; 
             
-            // QUITA CLASES VERDES/ROJAS
+			
             $(form).find('input, select').removeClass('is-valid is-invalid');
             $(form).find('.invalid-feedback').hide();
             
@@ -398,7 +397,7 @@
             form.reset();
             modalEl.querySelector('input[name="id_cliente"]').value = ''; 
 
-            // QUITA CLASES VERDES/ROJAS
+			
             $(form).find('input, select').removeClass('is-valid is-invalid');
             $(form).find('.invalid-feedback').hide();
 
@@ -407,13 +406,13 @@
             modal.show();
         }
 
-        // ================= FUNCIÓN EDITAR (CARGA DATOS) =================
+		
         function editarNatural(btn) {
             var modalEl = document.getElementById('modalNatural');
             var $modal = $(modalEl);
             var form = modalEl.querySelector('form');
 
-            // Limpia colores previos
+			
             $(form).find('input, select').removeClass('is-valid is-invalid');
             $(form).find('.invalid-feedback').hide();
             
@@ -453,7 +452,7 @@
             modal.show();
         }
 
-        // ================= VALIDACIÓN VISUAL EN TIEMPO REAL =================
+		
         function validarCampo(input) {
             var valor = input.value.trim();
             var name = input.getAttribute('name'); 
@@ -470,32 +469,29 @@
             } else if (name === 'genero') {
                 esValido = valor !== "";
             } else {
-                // Para textos generales (nombre, dirección, etc.)
+				
                 esValido = valor.length >= 2;
             }
 
             if (esValido) {
                 input.classList.remove('is-invalid');
                 input.classList.add('is-valid');
-                // Ocultar mensaje de error
+				
                 var errorDiv = input.nextElementSibling;
                 if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
                     errorDiv.style.display = 'none';
                 }
             } else {
                 input.classList.remove('is-valid');
-                // No forzamos 'is-invalid' mientras escribe para no ser molestos, 
-                // pero si estaba invalido lo dejamos invalido hasta que lo arregle.
-                // Opcional: input.classList.add('is-invalid'); 
+
             }
         }
 
-        // ================= CONFIRMACIÓN SWEETALERT MEJORADA =================
         function confirmarCambioEstado(event, elemento) {
             event.preventDefault(); 
             
             const url = elemento.getAttribute('href');
-            const tituloBtn = elemento.getAttribute('title'); // "Activar" o "Desactivar"
+            const tituloBtn = elemento.getAttribute('title'); 
 
             let verbo;
             let colorBtn;
